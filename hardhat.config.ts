@@ -1,17 +1,17 @@
-import { task } from "hardhat/config";
+import { task } from "hardhat/config"
 import '@typechain/hardhat'
-import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-waffle"
 import '@nomiclabs/hardhat-ethers'
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config"
 
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
+  const accounts = await hre.ethers.getSigners()
 
   for (const account of accounts) {
-    console.log(account.address);
+    console.log(account.address)
   }
-});
+})
 
 // Go to https://hardhat.org/config/ to learn more
 const config: HardhatUserConfig = {
@@ -25,6 +25,6 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "./build/artifacts/types"
   }
-};
+}
 
-export default config;
+export default config
