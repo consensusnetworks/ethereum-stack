@@ -6,7 +6,7 @@
 
 Get started by setting up your local environment.
 
-#### Prerequisites
+### Prerequisites
 
 Make sure your development environment has the necessary prerequisites.
 
@@ -14,7 +14,7 @@ Make sure your development environment has the necessary prerequisites.
 
 2. [VSCode](https://code.visualstudio.com/) – you could use another editor, but we can't guarantee nice formatting in the wild west.
 
-#### Install
+### Install
 
 Clone the repository, checkout a new branch from develop, and install all dependencies.
 
@@ -27,7 +27,7 @@ npm install
 
 ## 💻 Development
 
-#### Contracts
+### Hardhat
 
 Compile the contracts in [contracts/](contracts/).
 
@@ -53,15 +53,11 @@ Clean [build/artifacts/](build/artifacts/) and [build/cache/](build/cache/)). (N
 npm run task:clean
 ```
 
-#### Nodes
-
 Start a local Ethereum node.
 
 ```zsh
 npm run node:local
 ```
-
-#### Other
 
 Print all local accounts.
 
