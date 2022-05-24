@@ -1,0 +1,15 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+# hardhat files
+build/artifacts
+build/cache
+
+# vscode log files
+.vscode/*.log
+
+
