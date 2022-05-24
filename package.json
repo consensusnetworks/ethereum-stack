@@ -2,8 +2,12 @@
     "name": "ethereum-stack",
     "version": "0.0.1",
     "scripts": {
-        "dev:sample": "make dev-sample",
-        "test:hardhat": "npx hardhat test"
+        "deploy:sample": "make deploy-sample",
+        "test:contracts": "npx hardhat test",
+        "task:accounts": "npx hardhat accounts",
+        "task:compile": "npx hardhat compile",
+        "task:clean": "npx hardhat clean",
+        "node:local": "npx hardhat node"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.6",

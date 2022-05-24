@@ -1,2 +1,2 @@
-dev-sample:
-	npx hardhat run scripts/hardhat/sample-script.ts
+deploy-sample:
+	npx hardhat run scripts/hardhat/deploy/sample.ts
