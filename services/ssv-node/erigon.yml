@@ -1,0 +1,82 @@
+version: "3.4"
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: "3"
+      tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
+
+services:
+  erigon:
+    restart: "${RESTART}"
+    build:
+      context: ./erigon
+      dockerfile: ${ERIGON_DOCKERFILE}
+      args:
+        - BUILD_TARGET=${ERIGON_SRC_BUILD_TARGET}
+        - DOCKER_TAG=${ERIGON_DOCKER_TAG}
+    stop_grace_period: 5m
+    image: erigon:local
+    user: erigon
+    volumes:
+      - erigon-ec-data:/var/lib/erigon
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - ${EL_P2P_PORT}:${EL_P2P_PORT:-30303}/tcp
+      - ${EL_P2P_PORT}:${EL_P2P_PORT:-30303}/udp
+    networks:
+      default:
+        aliases:
+          - eth1
+    <<: *logging
+    entrypoint:
+      - docker-entrypoint.sh
+      - erigon
+      - --private.api.addr
+      - 0.0.0.0:9090
+      - --datadir
+      - /var/lib/erigon
+      - --port
+      - ${EL_P2P_PORT:-30303}
+      - --nat
+      - any
+      - --chain
+      - ${EL_NETWORK:-goerli}
+      - --prune=htc
+      - --metrics
+      - --metrics.addr
+      - 0.0.0.0
+      - --metrics.expensive
+  execution:
+    restart: "${RESTART}"
+    image: erigon:local
+    user: erigon
+    volumes:
+      - erigon-ec-data:/var/lib/erigon
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - erigon
+    pid: service:erigon # Use erigon's PID namespace. It's required to open Erigon's DB from another process (RPCDaemon local-mode)
+    entrypoint:
+      - rpcdaemon
+      - --datadir
+      - /var/lib/erigon
+      - --private.api.addr
+      - erigon:9090
+      - --txpool.api.addr
+      - erigon:9090
+      - --http.addr
+      - 0.0.0.0
+      - --http.vhosts=*
+      - --http.corsdomain=*
+      - --http.api
+      - web3,eth,net
+      - --http.port
+      - ${EL_RPC_PORT:-8545}
+      - --ws
+  eth:
+    depends_on:
+      - execution
+volumes:
+  erigon-ec-data:

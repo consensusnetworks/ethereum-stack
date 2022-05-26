@@ -1,0 +1,13 @@
+.env*
+docker-compose.yml
+ext-network.yml
+ext-network.yml.original
+.eth/*
+!.eth/README.md
+!.eth/validator_keys/.empty
+!.eth/keymanagertoken/.empty
+*.swp
+alertmanager/config.yml
+blox-ssv-config.yaml
+kintsugi-secrets/*
+kiln-secrets/*

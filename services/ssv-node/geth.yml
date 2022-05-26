@@ -1,0 +1,75 @@
+version: "3.4"
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "3"
+      tag: '{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}'
+
+services:
+  execution:
+    restart: "${RESTART}"
+    build:
+      context: ./geth
+      dockerfile: ${GETH_DOCKERFILE}
+      args:
+        - BUILD_TARGET=${GETH_SRC_BUILD_TARGET}
+        - DOCKER_TAG=${GETH_DOCKER_TAG}
+    stop_grace_period: 3m
+    image: geth:local
+    user: geth
+    volumes:
+      - geth-eth1-data:/var/lib/goethereum
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - ${EL_P2P_PORT:-30303}:${EL_P2P_PORT:-30303}/tcp
+      - ${EL_P2P_PORT:-30303}:${EL_P2P_PORT:-30303}/udp
+    networks:
+      default:
+        aliases:
+          - eth1
+    <<: *logging
+    entrypoint:
+      - docker-entrypoint.sh
+      - geth
+      - --http
+      - --http.addr
+      - 0.0.0.0
+      - --http.vhosts=*
+      - --http.corsdomain=*
+      - --http.api
+      - web3,eth,net
+      - --datadir
+      - /var/lib/goethereum
+      - --port
+      - ${EL_P2P_PORT:-30303}
+      - --http.port
+      - ${EL_RPC_PORT:-8545}
+      - --ws
+      - --ws.addr
+      - 0.0.0.0
+      - --ws.port
+      - ${EL_WS_PORT:-8546}
+      - --ws.api
+      - web3,eth,net
+      - --${EL_NETWORK:-goerli}
+      - --metrics
+      - --metrics.expensive
+      - --pprof
+      - --pprof.addr
+      - 0.0.0.0
+    command: ${GETH_CACHE}
+  set-prune-marker:
+    image: alpine:latest
+    user: "10001:10001"
+    restart: "no"
+    volumes:
+      - geth-eth1-data:/var/lib/goethereum
+    entrypoint: ["/bin/sh","-c"]
+    command: /bin/sh
+  eth:
+    depends_on:
+      - execution
+volumes:
+  geth-eth1-data:
