@@ -4,7 +4,7 @@
 
 ## Setup
 
-Get started by setting up your local environment.
+Get started below.
 
 ### Prerequisites
 
